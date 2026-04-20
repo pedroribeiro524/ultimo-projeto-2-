@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PedroTech | Plataforma Tecnológica</title>
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI'; }
+
+body {
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: white;
+}
+
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 40px;
+  background:rgba(15,23,42,0.8);
+  backdrop-filter:blur(10px);
+}
+
+nav a {
+  margin:0 10px;
+  color:#cbd5f5;
+  text-decoration:none;
+  cursor:pointer;
+}
+
+nav a:hover { color:#38bdf8; }
+
+.dev { font-size:12px; color:#64748b; }
+
+main {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:calc(100vh - 80px);
+}
+
+.card {
+  background:rgba(30,41,59,0.7);
+  padding:40px;
+  border-radius:15px;
+  width:320px;
+  text-align:center;
+}
+
+input {
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border:none;
+  border-radius:8px;
+}
+
+button {
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  background:#38bdf8;
+  cursor:pointer;
+}
+
+.hidden { display:none; }
+
+section { text-align:center; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>PedroTech</h1>
+
+  <nav id="menu" class="hidden">
+    <a onclick="mostrarPagina('home')">Home</a>
+    <a onclick="mostrarPagina('dashboard')">Dashboard</a>
+    <a onclick="mostrarPagina('projetos')">Projetos</a>
+    <a onclick="mostrarPagina('criadores')">Criadores</a>
+    <a onclick="mostrarPagina('sobre')">Sobre</a>
+    <a onclick="mostrarPagina('contato')">Contato</a>
+    <a onclick="logout()">Sair</a>
+  </nav>
+
+  <span class="dev">Desenvolvido por Pedro</span>
+</header>
+
+<main>
+
+<!-- LOGIN -->
+<section id="login" class="card">
+  <h2>Acessar Plataforma</h2>
+  <input type="text" id="user" placeholder="Usuário">
+  <input type="password" id="pass" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
+  <button onclick="criarConta()">Criar Conta</button>
+</section>
+
+<!-- PÁGINAS -->
+<section id="home" class="hidden">
+  <h2>Bem-vindo 👋</h2>
+  <p>Sistema em desenvolvimento...</p>
+</section>
+
+<section id="dashboard" class="hidden">
+  <h2>Dashboard</h2>
+  <p>Painel principal do sistema</p>
+</section>
+
+<section id="projetos" class="hidden">
+  <h2>Projetos</h2>
+  <p>Seus projetos aparecerão aqui</p>
+</section>
+
+<section id="criadores" class="hidden">
+  <h2>Criadores</h2>
+  <p>Pedro — Desenvolvedor do PedroTech</p>
+</section>
+
+<section id="sobre" class="hidden">
+  <h2>Sobre</h2>
+  <p>Plataforma tecnológica focada em inovação.</p>
+</section>
+
+<section id="contato" class="hidden">
+  <h2>Contato</h2>
+  <p>Email: contato@pedrotech.com</p>
+</section>
+
+</main>
+
+<script>
+
+// salvar contas como objeto
+function getUsers() {
+  return JSON.parse(localStorage.getItem("users") || "{}");
+}
+
+function setUsers(users) {
+  localStorage.setItem("users", JSON.stringify(users));
+}
+
+// criar conta
+function criarConta() {
+  let user = userInput();
+  let pass = passInput();
+
+  let users = getUsers();
+
+  if (!user || !pass) {
+    alert("Preencha tudo");
+    return;
+  }
+
+  if (users[user]) {
+    alert("Usuário já existe");
+    return;
+  }
+
+  users[user] = pass;
+  setUsers(users);
+
+  alert("Conta criada!");
+}
+
+// login
+function login() {
+  let user = userInput();
+  let pass = passInput();
+
+  let users = getUsers();
+
+  if (users[user] === pass) {
+    localStorage.setItem("logado", user);
+    entrarSistema();
+  } else {
+    alert("Login inválido");
+  }
+}
+
+// pegar inputs
+function userInput() {
+  return document.getElementById("user").value;
+}
+
+function passInput() {
+  return document.getElementById("pass").value;
+}
+
+// entrar no sistema
+function entrarSistema() {
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("menu").classList.remove("hidden");
+
+  mostrarPagina("home");
+}
+
+// logout
+function logout() {
+  localStorage.removeItem("logado");
+  location.reload();
+}
+
+// navegação
+function mostrarPagina(pagina) {
+  let secoes = document.querySelectorAll("main section");
+
+  secoes.forEach(sec => sec.classList.add("hidden"));
+
+  document.getElementById(pagina).classList.remove("hidden");
+}
+
+// manter logado
+window.onload = () => {
+  let user = localStorage.getItem("logado");
+  if (user) entrarSistema();
+};
+
+</script>
+
+</body>
+</html>
